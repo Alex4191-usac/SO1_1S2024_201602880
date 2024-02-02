@@ -50,10 +50,33 @@ docker ps
 
 ### Anexos
 
+* Captura de construccion de Imagenes:
+![Captura de construccion de Imagenes](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/tarea1/Tareas/Tarea1/SCREENS/Screenshot%20from%202024-02-01%2019-12-20.png)
+
+* Captura de imagenes construidas:
+
+![Imagenes](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/tarea1/Tareas/Tarea1/SCREENS/Screenshot%20from%202024-02-01%2019-13-59.png)
+
+
+* Captura de construccion de Contenedores:
+
+![Captura de construccion de Contenedores](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/tarea1/Tareas/Tarea1/SCREENS/Screenshot%20from%202024-02-01%2019-13-46.png)
+
+
+
+*Captura de contenedores activos:
+![Activos Containers](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/tarea1/Tareas/Tarea1/SCREENS/Screenshot%20from%202024-02-01%2019-26-54.png)
+
+
 * Captura de interaccion cliente - servidor
+![Inicial Carga Cliente](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/tarea1/Tareas/Tarea1/SCREENS/Screenshot%20from%202024-02-01%2019-16-03.png)
+
+![Fin](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/tarea1/Tareas/Tarea1/SCREENS/Screenshot%20from%202024-02-01%2019-16-08.png)
 
 
 
 
-* enlace a Grabacion:
+
+
+* enlace a Grabacion (ADV: volumen bajo):
 [GrabacionTarea1](https://drive.google.com/file/d/1v2xaHeyX8mBXnX9CxVXrYX0t3XrgOKph/view?usp=sharing)
