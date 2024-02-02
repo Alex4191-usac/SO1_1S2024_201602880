@@ -10,6 +10,9 @@ utilizando el lenguaje de programación Go, la cual consume un endpoint especifi
 
 * Comandos utilizados para crear las imagenes y comandos para ejecutar los contenedores:
 
+
+
+
 ```
 #Comando para crear la imagen del cliente
 
@@ -49,3 +52,8 @@ docker ps
 
 * Captura de interaccion cliente - servidor
 
+
+
+
+* enlace a Grabacion:
+[GrabacionTarea1](https://drive.google.com/file/d/1v2xaHeyX8mBXnX9CxVXrYX0t3XrgOKph/view?usp=sharing)
