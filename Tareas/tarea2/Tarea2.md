@@ -24,5 +24,5 @@ para poder visualizar e interactuar con la aplicacion, al momento de levantar lo
 
 ### Anexos
 
-* enlace del Video:
+* enlace del Video (DISCLAIMER: volumen Bajo):
 [VideoTarea2](https://drive.google.com/file/d/1HJ4CJxYH8t_3Up6_IBh1A_JBWdnRFkI0/view?usp=sharing)
