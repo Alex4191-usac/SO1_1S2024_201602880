@@ -2,8 +2,10 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"os/exec"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -18,6 +20,13 @@ type Message struct {
 type DataRecord struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
+}
+
+type RamInfo struct {
+	TotalRam     uint64 `json:"totalRam"`
+	MemoriaEnUso uint64 `json:"memoriaEnUso"`
+	Porcentaje   uint64 `json:"porcentaje"`
+	Libre        uint64 `json:"libre"`
 }
 
 var db *sql.DB
@@ -69,13 +78,27 @@ func initDB(username, password, hostname, port, dbname string) {
 
 func infoRAMHandler(c *gin.Context) {
 
-	message := Message{
-		Name: "getting RAM INFO",
-		Id:   1,
+	cmd := exec.Command("sh", "-c", "cat /proc/modulo_ram")
+	output, err := cmd.Output()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error executing command"})
 	}
 
+	// Unmarshal the JSON output into RamInfo struct
+	var ramInfo RamInfo
+	err = json.Unmarshal(output, &ramInfo)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error unmarshalling JSON"})
+	}
+
+	fmt.Printf("Total RAM: %d\n", ramInfo.TotalRam)
+	fmt.Printf("Memory in use: %d\n", ramInfo.MemoriaEnUso)
+	fmt.Printf("Percentage used: %d%%\n", ramInfo.Porcentaje)
+	fmt.Printf("Free memory: %d\n", ramInfo.Libre)
+
 	c.JSON(http.StatusOK, gin.H{
-		"message": message,
+		"ramInfo": ramInfo,
 	})
 }
 

@@ -10,3 +10,12 @@ CREATE TABLE IF NOT EXISTS example_table (
 
 INSERT INTO example_table (name) VALUES ('Example Data 1');
 INSERT INTO example_table (name) VALUES ('Example Data 2');
+
+CREATE TABLE IF NOT EXISTS ram_module (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  total_memory INT,
+  used_memory INT,
+  free_memory INT,
+  percentage_used FLOAT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
