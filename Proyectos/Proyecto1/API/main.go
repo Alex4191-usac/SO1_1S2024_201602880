@@ -4,32 +4,26 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os/exec"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type Message struct {
-	Name string `json:"name"`
-	Id   int    `json:"id"`
-}
-
-type DataRecord struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-}
-
 type RamInfo struct {
 	TotalRam     uint64 `json:"totalRam"`
 	MemoriaEnUso uint64 `json:"memoriaEnUso"`
 	Porcentaje   uint64 `json:"porcentaje"`
 	Libre        uint64 `json:"libre"`
+	Fecha        string `json:"fecha"`
 }
 
 var db *sql.DB
+var ramDataChan = make(chan RamInfo)
 
 func main() {
 
@@ -42,13 +36,17 @@ func main() {
 	// Initialize the database connection
 	initDB(username, password, hostname, portDB, dbname)
 
+	defer db.Close()
+
+	go assignToChannel(ramDataChan)
+
 	router := gin.Default()
 
 	router.Use(cors.Default())
 
 	router.GET("/ram", infoRAMHandler)
-	router.GET("/cpu", infoCPUHandler)
-	router.GET("/data", getDataHandler)
+	router.GET("/insertRam", handleRAM)
+	router.GET("/getRam", getDataRamHandler)
 
 	port := 8080
 	router.Run(fmt.Sprintf(":%d", port))
@@ -92,31 +90,90 @@ func infoRAMHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error unmarshalling JSON"})
 	}
 
-	fmt.Printf("Total RAM: %d\n", ramInfo.TotalRam)
-	fmt.Printf("Memory in use: %d\n", ramInfo.MemoriaEnUso)
-	fmt.Printf("Percentage used: %d%%\n", ramInfo.Porcentaje)
-	fmt.Printf("Free memory: %d\n", ramInfo.Libre)
-
 	c.JSON(http.StatusOK, gin.H{
 		"ramInfo": ramInfo,
 	})
 }
 
-func infoCPUHandler(c *gin.Context) {
+func assignToChannel(ch chan RamInfo) {
+	for {
+		cmd := exec.Command("sh", "-c", "cat /proc/modulo_ram")
+		output, err := cmd.Output()
+		if err != nil {
+			fmt.Println("Error executing command")
+			return
+		}
 
-	message := Message{
-		Name: "getting CPU INFO",
-		Id:   2,
+		// Unmarshal the JSON output into RamInfo struct
+		var ramInfo RamInfo
+		err = json.Unmarshal(output, &ramInfo)
+		if err != nil {
+			fmt.Println("Error unmarshalling JSON")
+			return
+		}
+		log.Println("getting data from channel", ramInfo)
+		// Send RamInfo to the channel
+		ch <- ramInfo
+		time.Sleep(500 * time.Millisecond)
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": message,
-	})
 }
 
-func getDataHandler(c *gin.Context) {
+func handleRAM(c *gin.Context) {
+	ramData := <-ramDataChan
+
+	if ramData != (RamInfo{}) {
+
+		insertSQL := "INSERT INTO ram_module (total_memory, used_memory, free_memory, percentage_used) VALUES (?,?,?,?)"
+		log.Println(ramData)
+		_, err := db.Exec(insertSQL, ramData.TotalRam, ramData.MemoriaEnUso, ramData.Libre, ramData.Porcentaje)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error inserting data into database"})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"message": ramData})
+	} else {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error getting data from channel"})
+
+	}
+
+}
+
+/*func insertRamHandler(c *gin.Context) {
+
+	cmd := exec.Command("sh", "-c", "cat /proc/modulo_ram")
+	output, err := cmd.Output()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error executing command"})
+	}
+
+	// Unmarshal the JSON output into RamInfo struct
+	var ramInfo RamInfo
+	err = json.Unmarshal(output, &ramInfo)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error unmarshalling JSON"})
+	}
+
+	// Perform an INSERT query
+
+	result, err := db.Exec("INSERT INTO ram_module (total_memory, used_memory, free_memory, percentage_used) VALUES (?,?,?,?)", ramInfo.TotalRam, ramInfo.MemoriaEnUso, ramInfo.Libre, ramInfo.Porcentaje)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error inserting data into the database"})
+		return
+	}
+
+	// Get the ID of the inserted record
+	insertedID, _ := result.LastInsertId()
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": fmt.Sprintf("Data inserted with ID: %d", insertedID),
+	})
+
+}*/
+
+func getDataRamHandler(c *gin.Context) {
 	// Perform a SELECT query
-	rows, err := db.Query("SELECT id, name FROM example_table")
+	rows, err := db.Query("SELECT total_memory, used_memory, free_memory, percentage_used, created_at FROM ram_module")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying the database"})
 		return
@@ -124,10 +181,10 @@ func getDataHandler(c *gin.Context) {
 	defer rows.Close()
 
 	// Iterate over the result set and collect data
-	var dataRecords []DataRecord
+	var dataRecords []RamInfo
 	for rows.Next() {
-		var record DataRecord
-		if err := rows.Scan(&record.ID, &record.Name); err != nil {
+		var record RamInfo
+		if err := rows.Scan(&record.TotalRam, &record.MemoriaEnUso, &record.Libre, &record.Porcentaje, &record.Fecha); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error scanning database rows"})
 			return
 		}

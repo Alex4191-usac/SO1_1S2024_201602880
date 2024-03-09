@@ -13,9 +13,9 @@ INSERT INTO example_table (name) VALUES ('Example Data 2');
 
 CREATE TABLE IF NOT EXISTS ram_module (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  total_memory INT,
-  used_memory INT,
-  free_memory INT,
+  total_memory FLOAT,
+  used_memory FLOAT,
+  free_memory FLOAT,
   percentage_used FLOAT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -1,0 +1,81 @@
+{
+    "data": [
+      {
+        "totalRam": 16636900000,
+        "memoriaEnUso": 5730280000,
+        "porcentaje": 34,
+        "libre": 10906700000,
+        "fecha": "2024-03-09 23:03:44"
+      },
+      {
+        "totalRam": 16636900000,
+        "memoriaEnUso": 6728270000,
+        "porcentaje": 40,
+        "libre": 9908670000,
+        "fecha": "2024-03-09 23:03:49"
+      },
+      {
+        "totalRam": 16636900000,
+        "memoriaEnUso": 6700650000,
+        "porcentaje": 40,
+        "libre": 9936290000,
+        "fecha": "2024-03-09 23:03:54"
+      },
+      {
+        "totalRam": 16636900000,
+        "memoriaEnUso": 6697520000,
+        "porcentaje": 40,
+        "libre": 9939420000,
+        "fecha": "2024-03-09 23:03:59"
+      },
+      {
+        "totalRam": 16636900000,
+        "memoriaEnUso": 6667300000,
+        "porcentaje": 40,
+        "libre": 9969640000,
+        "fecha": "2024-03-09 23:04:04"
+      },
+      {
+        "totalRam": 16636900000,
+        "memoriaEnUso": 6658060000,
+        "porcentaje": 40,
+        "libre": 9978880000,
+        "fecha": "2024-03-09 23:04:46"
+      },
+      {
+        "totalRam": 16636900000,
+        "memoriaEnUso": 6814490000,
+        "porcentaje": 40,
+        "libre": 9822450000,
+        "fecha": "2024-03-09 23:04:51"
+      },
+      {
+        "totalRam": 16636900000,
+        "memoriaEnUso": 6811120000,
+        "porcentaje": 40,
+        "libre": 9825820000,
+        "fecha": "2024-03-09 23:04:56"
+      },
+      {
+        "totalRam": 16636900000,
+        "memoriaEnUso": 6702170000,
+        "porcentaje": 40,
+        "libre": 9934770000,
+        "fecha": "2024-03-09 23:05:01"
+      },
+      {
+        "totalRam": 16636900000,
+        "memoriaEnUso": 6870460000,
+        "porcentaje": 41,
+        "libre": 9766480000,
+        "fecha": "2024-03-09 23:05:07"
+      },
+      {
+        "totalRam": 16636900000,
+        "memoriaEnUso": 6739940000,
+        "porcentaje": 40,
+        "libre": 9897000000,
+        "fecha": "2024-03-09 23:05:12"
+      }
+    ]
+  }

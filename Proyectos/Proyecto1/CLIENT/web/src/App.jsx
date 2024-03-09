@@ -28,15 +28,16 @@ const App = () => {
   // Function to fetch and update chart data
   const updateChartData = async () => {
     try {
-      const response = await fetch('http://localhost:8080/ram')
+      console.log("Fetching data from server")
+      const response = await fetch('http://localhost:8080/insertRam')
       const data = await response.json()
-      setRamInfo(data.ramInfo)
+      setRamInfo(data.message)
       const newData = {
         labels: [`Ram Libre`, 'Ram Usuada'],
         datasets: [
           {
             label: 'Ram Monitor',
-            data: [data.ramInfo.libre, data.ramInfo.memoriaEnUso], // Replace with your new data values
+            data: [data.message.libre, data.message.memoriaEnUso], // Replace with your new data values
             backgroundColor: ['#1D2B53', '#647D87'],
            
           },
@@ -45,6 +46,7 @@ const App = () => {
 
       setChartData(newData); 
     } catch (error) {
+        console.log(error)
         console.log("Error: " + " Please check the server is running or not."  )
     } finally {
        // Update the chart instance using chartRef
@@ -62,7 +64,7 @@ const App = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       updateChartData();
-    }, 1000)
+    }, 3000)
     return () => clearInterval(interval)
   }, []);
 
