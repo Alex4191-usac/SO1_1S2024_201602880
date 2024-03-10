@@ -173,7 +173,7 @@ func handleRAM(c *gin.Context) {
 
 func getDataRamHandler(c *gin.Context) {
 	// Perform a SELECT query
-	rows, err := db.Query("SELECT total_memory, used_memory, free_memory, percentage_used, created_at FROM ram_module")
+	rows, err := db.Query("SELECT total_memory, used_memory, free_memory, percentage_used, created_at FROM ram_module ORDER BY id DESC LIMIT 10")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying the database"})
 		return
@@ -191,7 +191,17 @@ func getDataRamHandler(c *gin.Context) {
 		dataRecords = append(dataRecords, record)
 	}
 
+	// Reverse the array
+	dataRecords = reverseArray(dataRecords)
+
 	c.JSON(http.StatusOK, gin.H{
 		"data": dataRecords,
 	})
+}
+
+func reverseArray(arr []RamInfo) []RamInfo {
+	for i, j := 0, len(arr)-1; i < j; i, j = i+1, j-1 {
+		arr[i], arr[j] = arr[j], arr[i]
+	}
+	return arr
 }
