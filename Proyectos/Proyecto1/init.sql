@@ -17,5 +17,5 @@ CREATE TABLE IF NOT EXISTS ram_module (
   used_memory FLOAT,
   free_memory FLOAT,
   percentage_used FLOAT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP 
 );

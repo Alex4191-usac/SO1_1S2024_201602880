@@ -122,10 +122,11 @@ func handleRAM(c *gin.Context) {
 	ramData := <-ramDataChan
 
 	if ramData != (RamInfo{}) {
-
-		insertSQL := "INSERT INTO ram_module (total_memory, used_memory, free_memory, percentage_used) VALUES (?,?,?,?)"
+		// perform the time of the transaction
+		ramData.Fecha = time.Now().Format("2006-01-02 15:04:05")
+		insertSQL := "INSERT INTO ram_module (total_memory, used_memory, free_memory, percentage_used, created_at) VALUES (?,?,?,?,?)"
 		log.Println(ramData)
-		_, err := db.Exec(insertSQL, ramData.TotalRam, ramData.MemoriaEnUso, ramData.Libre, ramData.Porcentaje)
+		_, err := db.Exec(insertSQL, ramData.TotalRam, ramData.MemoriaEnUso, ramData.Libre, ramData.Porcentaje, ramData.Fecha)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error inserting data into database"})
 			return
