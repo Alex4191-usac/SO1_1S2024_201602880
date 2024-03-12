@@ -5,6 +5,7 @@ import { Doughnut } from 'react-chartjs-2';
 const App = () => {
   // State variables for chart data
   const [getRamInfo, setRamInfo] = useState(null)
+  const [getCpuInfo, setCpuInfo] = useState(null)
   const [chartData, setChartData] = useState({
     labels: ['Ram Libre', 'Ram Usuada'],
     datasets: [
@@ -15,8 +16,18 @@ const App = () => {
       },
     ],
   });
+  const [chartDataCpu, setChartDataCpu] = useState({
+    labels: ['Cpu Libre', 'Cpu Usuada'],
+    datasets: [
+      {
+        label: 'Cpu Monitor',
+        data: [50, 50],
+        backgroundColor: ['#FA6607', '#FA6607']
+      },
+    ],
+  });
   const chartRef = useRef(null); // Reference to the chart instance
-
+  const chartRefCpu = useRef(null); // Reference to the chart instance
 
   /*function getRandomInt(min, max) {
     const minCeiled = Math.ceil(min);
@@ -58,12 +69,46 @@ const App = () => {
     
   };
 
+
+  const updateChartDataCPU = async () => {
+    try {
+      console.log("Fetching data from server")
+      const response = await fetch('http://localhost:8080/insertCpu')
+      const data = await response.json()
+      setCpuInfo(data.message)
+      
+      const newData = {
+        labels: [`CPU Restante`, 'CPU Usuado'],
+        datasets: [
+          {
+            label: 'Cpu Monitor',
+            data: [100-data.message.cpu_porcentaje, data.message.cpu_porcentaje], // Replace with your new data values
+            backgroundColor: ['#FA6607', '#647D87'],
+           
+          },
+        ],
+      };
+
+      setChartDataCpu(newData); 
+    } catch (error) {
+        console.log(error)
+        console.log("Error: " + " Please check the server is running or not."  )
+    } finally {
+       // Update the chart instance using chartRef
+      if (chartRefCpu.current) {
+        chartRefCpu.current.update();
+      }
+    }
+   
+    
+  };
   
 
   // Run update function initially
   useEffect(() => {
     const interval = setInterval(() => {
       updateChartData();
+      updateChartDataCPU();
     }, 3000)
     return () => clearInterval(interval)
   }, []);
@@ -89,8 +134,11 @@ const App = () => {
             <Doughnut updateMode='active' data={chartData} ref={chartRef} options={{ maintainAspectRatio: false }} />
           </div>
         </div>
-        <div className="w-1/2">
-          <p>hola</p>
+        <div className="w-1/2 border border-b-gray-600 shadow-xl rounded-xl  ">
+          <h1 className='text-2xl text-center font-bold mb-5 pt-5'>CPU Monitor</h1>
+            <div className=' mt-4 mb-10 h-60 '>
+             <Doughnut updateMode='active' data={chartDataCpu} ref={chartRef} options={{ maintainAspectRatio: false }} />
+             </div>
         </div>
       </div>
     </section>
