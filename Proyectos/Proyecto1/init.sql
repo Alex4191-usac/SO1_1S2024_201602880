@@ -19,3 +19,9 @@ CREATE TABLE IF NOT EXISTS ram_module (
   percentage_used FLOAT,
   created_at TIMESTAMP 
 );
+
+CREATE TABLE IF NOT EXISTS cpu_module (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  percentage_used FLOAT,
+  created_at TIMESTAMP 
+);
