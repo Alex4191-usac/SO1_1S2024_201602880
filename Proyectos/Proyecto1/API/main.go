@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os/exec"
+	"strconv"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -57,6 +58,11 @@ func main() {
 	router.GET("/getRam", getDataRamHandler)
 	router.GET("/insertCpu", CpuHandler)
 	router.GET("/getCpu", getDataCpuHandler)
+	//PROCESS CREATIONS
+	router.GET("/createProcess", createProcess)
+	router.GET("/stopProcess", stopProcess)
+	router.GET("/resumeProcess", resumeProcess)
+	router.GET("/terminateProcess", terminateProcess)
 
 	port := 8080
 	router.Run(fmt.Sprintf(":%d", port))
@@ -244,4 +250,96 @@ func getDataCpuHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"data": dataRecords,
 	})
+}
+
+/*Method for CREATE, STOP, TERMINATE PROCESS*/
+
+func createProcess(c *gin.Context) {
+	cmd := exec.Command("sleep", "infinity")
+	err := cmd.Start()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating process"})
+		return
+	}
+
+	pid := cmd.Process.Pid
+	pidConv := strconv.Itoa(pid)
+
+	c.JSON(http.StatusOK, gin.H{"message": pidConv})
+
+}
+
+func stopProcess(c *gin.Context) {
+	pid := c.Request.URL.Query().Get("pid")
+
+	if pid == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing 'pid' parameter"})
+		return
+	}
+
+	//check if pid is a number
+	validPid, err := strconv.Atoi(pid)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'pid' parameter"})
+		return
+	}
+
+	cmd := exec.Command("kill", "-SIGSTOP", strconv.Itoa(validPid))
+	err = cmd.Run()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error stopping process"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Process stopped with pid: " + pid})
+}
+
+func resumeProcess(c *gin.Context) {
+	pid := c.Request.URL.Query().Get("pid")
+
+	if pid == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing 'pid' parameter"})
+		return
+	}
+
+	//check if pid is a number
+	validPid, err := strconv.Atoi(pid)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'pid' parameter"})
+		return
+	}
+
+	cmd := exec.Command("kill", "-SIGCONT", strconv.Itoa(validPid))
+	err = cmd.Run()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error resuming process"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Process resumed with pid: " + pid})
+}
+
+func terminateProcess(c *gin.Context) {
+	pid := c.Request.URL.Query().Get("pid")
+
+	if pid == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing 'pid' parameter"})
+		return
+	}
+
+	//check if pid is a number
+	validPid, err := strconv.Atoi(pid)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid 'pid' parameter"})
+		return
+	}
+
+	cmd := exec.Command("kill", "-9", strconv.Itoa(validPid))
+	err = cmd.Run()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error terminating process"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Process terminated with pid: " + pid})
 }
