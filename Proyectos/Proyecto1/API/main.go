@@ -30,9 +30,31 @@ type CpuInfo struct {
 	Fecha          string `json:"fecha"`
 }
 
+type ListProcess struct {
+	Process []Process `json:"processes"`
+}
+
+type Process struct {
+	Pid   int            `json:"pid"`
+	Name  string         `json:"name"`
+	User  int            `json:"user"`
+	State int            `json:"state"`
+	Ram   int            `json:"ram"`
+	Child []ChildProcess `json:"child"`
+}
+
+type ChildProcess struct {
+	Pid      int    `json:"pid"`
+	Name     string `json:"name"`
+	State    int    `json:"state"`
+	PidPadre int    `json:"pidPadre"`
+}
+
 var db *sql.DB
 var ramDataChan = make(chan RamInfo)
-var cpuDataChan = make(chan CpuInfo)
+
+// var cpuDataChan = make(chan CpuInfo)
+var cpuDataChan = make(chan string)
 
 func main() {
 
@@ -63,6 +85,9 @@ func main() {
 	router.GET("/stopProcess", stopProcess)
 	router.GET("/resumeProcess", resumeProcess)
 	router.GET("/terminateProcess", terminateProcess)
+
+	//LIST OF PROCESS
+	router.GET("/listProcess", listProcessCpu)
 
 	port := 8080
 	router.Run(fmt.Sprintf(":%d", port))
@@ -171,7 +196,7 @@ func reverseArray(arr []RamInfo) []RamInfo {
 
 /*METHODS FOR CPU USAGE*/
 
-func assignToChannelCpu(ch chan CpuInfo) {
+func assignToChannelCpu(ch chan string) {
 	for {
 		cmd := exec.Command("sh", "-c", "cat /proc/modulo_cpu")
 		output, err := cmd.Output()
@@ -181,23 +206,32 @@ func assignToChannelCpu(ch chan CpuInfo) {
 		}
 
 		// Unmarshal the JSON output into RamInfo struct
-		var cpuInfo CpuInfo
+		/*var cpuInfo CpuInfo
 		err = json.Unmarshal(output, &cpuInfo)
 
 		if err != nil {
 			fmt.Println("Error unmarshalling JSON")
 			return
 		}
-		log.Println("getting data from channel", cpuInfo)
+		log.Println("getting data from channel", cpuInfo)*/
 		// Send RamInfo to the channel
-		ch <- cpuInfo
+		ch <- string(output)
 		time.Sleep(500 * time.Millisecond)
 	}
 
 }
 
 func CpuHandler(c *gin.Context) {
-	cpuData := <-cpuDataChan
+	cpuInfo := <-cpuDataChan
+
+	// Unmarshal the JSON output into RamInfo struct
+	var cpuData CpuInfo
+	err := json.Unmarshal([]byte(cpuInfo), &cpuData)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error unmarshalling JSON"})
+		return
+	}
 
 	if cpuData != (CpuInfo{}) {
 		// perform the time of the transaction
@@ -342,4 +376,23 @@ func terminateProcess(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Process terminated with pid: " + pid})
+}
+
+// Handle List of Process
+func listProcessCpu(c *gin.Context) {
+	cpuInfo := <-cpuDataChan
+
+	// Unmarshal the JSON into list of process
+	var listProcess ListProcess
+	err := json.Unmarshal([]byte(cpuInfo), &listProcess)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error unmarshalling JSON"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": listProcess})
+
+	//
+
 }
