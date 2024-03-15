@@ -27,7 +27,7 @@ const TreeCanva = ({data}) => {
 
   const generateDot = (node) => {
     let dot = `
-      ${node.pid} [label="${node.name}"];
+      ${node.pid} [label="${node.name}\n${node.pid}"];
     `;
     if (node.child) {
       node.child.forEach((child) => {
