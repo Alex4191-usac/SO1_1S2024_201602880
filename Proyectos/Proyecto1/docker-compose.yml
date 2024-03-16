@@ -1,6 +1,22 @@
 version: "3.8"
-
 services:
+  
+  client:
+    build: ./CLIENT/web
+    ports:
+      - "80:80"
+    networks:
+      - sopes-app
+  api-server:
+    build: ./API
+    ports:
+      - "8080:8080"
+    networks:
+      - sopes-app
+    depends_on:
+      - mysql
+    privileged: true
+    
   mysql:
     image: mysql:latest
     container_name: mysql_container
@@ -14,6 +30,12 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "3306:3306"
-
+    networks:
+      - sopes-app
+  
 volumes:
   mysql_data:
+  
+networks:
+  sopes-app:
+    driver: bridge

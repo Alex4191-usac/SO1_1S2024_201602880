@@ -60,7 +60,7 @@ func main() {
 
 	username := "user123"
 	password := "user_password123"
-	hostname := "localhost"
+	hostname := "mysql"
 	portDB := "3306"
 	dbname := "sample_db"
 
@@ -76,18 +76,18 @@ func main() {
 
 	router.Use(cors.Default())
 
-	router.GET("/insertRam", handleRAM)
-	router.GET("/getRam", getDataRamHandler)
-	router.GET("/insertCpu", CpuHandler)
-	router.GET("/getCpu", getDataCpuHandler)
+	router.GET("/api/insertRam", handleRAM)
+	router.GET("/api/getRam", getDataRamHandler)
+	router.GET("/api/insertCpu", CpuHandler)
+	router.GET("/api/getCpu", getDataCpuHandler)
 	//PROCESS CREATIONS
-	router.GET("/createProcess", createProcess)
-	router.GET("/stopProcess", stopProcess)
-	router.GET("/resumeProcess", resumeProcess)
-	router.GET("/terminateProcess", terminateProcess)
+	router.GET("/api/createProcess", createProcess)
+	router.GET("/api/stopProcess", stopProcess)
+	router.GET("/api/resumeProcess", resumeProcess)
+	router.GET("/api/terminateProcess", terminateProcess)
 
 	//LIST OF PROCESS
-	router.GET("/listProcess", listProcessCpu)
+	router.GET("/api/listProcess", listProcessCpu)
 
 	port := 8080
 	router.Run(fmt.Sprintf(":%d", port))
@@ -262,7 +262,8 @@ func getDataCpuHandler(c *gin.Context) {
 	// Perform a SELECT query
 	rows, err := db.Query("SELECT percentage_used, created_at FROM cpu_module ORDER BY id DESC LIMIT 10")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying the database"})
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	defer rows.Close()

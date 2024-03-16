@@ -11,7 +11,7 @@ const Tree = () => {
 
   const getProcess = async () => {
     try {
-      const response = await fetch('http://localhost:8080/listProcess')
+      const response = await fetch('/listProcess')
       const data = await response.json()
       setListProcess(data.message.processes)
     } catch (error) {

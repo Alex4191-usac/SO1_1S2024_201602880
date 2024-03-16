@@ -15,7 +15,7 @@ const History = () => {
 
   const fetchRamHistory = async () => {
     try {
-      const response = await fetch('http://localhost:8080/getRam')
+      const response = await fetch('/getRam')
       const data = await response.json()
       const chartData = createData(data)
       setRamHistory(chartData)
@@ -26,7 +26,7 @@ const History = () => {
 
   const fetchCpuHistory = async () => {
     try {
-      const response = await fetch('http://localhost:8080/getCpu')
+      const response = await fetch('/getCpu')
       const data = await response.json()
       const chartData = createDataCpu(data)
       setCpuHistory(chartData)

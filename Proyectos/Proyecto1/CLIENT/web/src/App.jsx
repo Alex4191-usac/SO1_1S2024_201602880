@@ -40,7 +40,7 @@ const App = () => {
   const updateChartData = async () => {
     try {
       console.log("Fetching data from server")
-      const response = await fetch('http://localhost:8080/insertRam')
+      const response = await fetch('/insertRam')
       const data = await response.json()
       setRamInfo(data.message)
       const newData = {
@@ -73,7 +73,7 @@ const App = () => {
   const updateChartDataCPU = async () => {
     try {
       console.log("Fetching data from server")
-      const response = await fetch('http://localhost:8080/insertCpu')
+      const response = await fetch('/insertCpu')
       const data = await response.json()
       setCpuInfo(data.message)
       

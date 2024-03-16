@@ -42,7 +42,7 @@ const SManagment = () => {
     if (initialNodes.length > 0) cleanData()
 
     try {
-      const response = await fetch('http://localhost:8080/createProcess')
+      const response = await fetch('/createProcess')
       const data = await response.json()
       setPid(data.message)
     } catch (error) {
@@ -90,11 +90,11 @@ const SManagment = () => {
       
   };
 
-  const handleKill = () => {
+  const handleKill = async () => {
     if (initialNodes.length === 0) return
     try {
-      const response = fetch(`http://localhost:8080/terminateProcess?pid=${getPid}`)
-      const data = response.json()
+      const response = await fetch(`/terminateProcess?pid=${getPid}`)
+      const data = await response.json()
       console.log(data.message)
     } catch (error) {
       console.log(error)
@@ -145,7 +145,7 @@ const SManagment = () => {
   const handleStop = async () => {
     if (initialNodes.length === 0 || actualState ==="Terminated" || actualState ==="Ready") return
     try {
-      const response = await fetch(`http://localhost:8080/stopProcess?pid=${getPid}`)
+      const response = await fetch(`/stopProcess?pid=${getPid}`)
       const data = await response.json()
       console.log(data.message)
     } catch (error) {
@@ -196,7 +196,7 @@ const SManagment = () => {
   const handleResume = async () => {
     if (initialNodes.length === 0 || actualState ==="Terminated" || actualState==="Running") return
     try {
-      const response = await fetch(`http://localhost:8080/resumeProcess?pid=${getPid}`)
+      const response = await fetch(`/resumeProcess?pid=${getPid}`)
       const data = await response.json()
       console.log(data.message)
     } catch (error) {
