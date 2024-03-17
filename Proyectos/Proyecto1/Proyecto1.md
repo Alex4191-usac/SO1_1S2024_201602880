@@ -139,7 +139,7 @@ Ademas podemos ver la opcion de poder actualizar las graficas manualmente median
 en esta pagina se mostra el arbol de procesos que es administrado por el modulo_cpu que se cargo anteriormente, estos procesos se podran visualizar al momento de seleccionar el SelectBox
 
 
-![TreeProcess](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/proyecto1/Proyectos/Proyecto1/assets/Historial.png)
+![TreeProcess](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/proyecto1/Proyectos/Proyecto1/assets/Tree%20Process.png)
 
 
 ademas tiene la capacidad que cuando este es seleccionado, y al presionar el boton de View que se encuentra en la parte izquierda del Select box, mostrara de manera grafica como se compone desde la raiz hasta sus hijos (si es que los tuviera)
@@ -195,6 +195,8 @@ al seleccionar stop el proceso pasara a un estado de Ready
 - Ready: El proceso está esperando ser asignado a un procesador.
 
 el color que identifica este estado es el color `amarillo`
+
+[StateManagment3](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/proyecto1/Proyectos/Proyecto1/assets/state%20Managment3.png)
 
 ##### Opcion Resume & estados
 
