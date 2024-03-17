@@ -196,7 +196,7 @@ al seleccionar stop el proceso pasara a un estado de Ready
 
 el color que identifica este estado es el color `amarillo`
 
-[StateManagment3](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/proyecto1/Proyectos/Proyecto1/assets/state%20Managment3.png)
+![StateManagment3](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/proyecto1/Proyectos/Proyecto1/assets/state%20Managment3.png)
 
 ##### Opcion Resume & estados
 
