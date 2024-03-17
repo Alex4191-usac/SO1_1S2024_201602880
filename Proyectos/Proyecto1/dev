@@ -1,14 +1,14 @@
 version: "3.8"
 services:
-
+  
   client:
-    image: alex4191/proyecto1-client:v1.0
+    build: ./CLIENT/web
     ports:
       - "80:80"
     networks:
       - sopes-app
   api-server:
-    image: alex4191/proyecto1-api-server:v1.0
+    build: ./API
     ports:
       - "8080:8080"
     networks:
