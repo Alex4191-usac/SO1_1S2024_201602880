@@ -82,18 +82,27 @@ Docker compose up
 #puede agregar la etiqueta -d , para evitar visualizar los registros de inicializacion
 ```
 
+
 y con ello los servicios serian iniciados exitosamente y lo que queda es utilizar el portal, para hacer uso de el solo se debe utilizar ya sea la ip de una maquina virtual o fisica 
 seguida del puerto por defecto que en este caso es 80 en y colocar, esta informacion en el navegador web de preferencia.
 
 ej: `xxxx.xxx.xxx.xxx:80` or `localhost:80`
 
+3. Detener uso & Remover:
+
+para parar completamente la aplicacion basta con solamente parar la ejecucion en la terminal donde se inicio, para ello podemos hacer uso de la combinacion `Ctrl + c` para parar los contenedores.
+
+si deseamos removerlos por completo utilizamos el comando
+
+```bash
+ Docker compose down
+```
+
+nota: debemos estar localizados en la carpeta contenedora del archivo `docker-compose.yml`
 
 ## Uso:
 
-Al iniciar nuestra aplicacion mostrara por defecto la siguiente pantalla con las siguientes opciones:
-
-
-nuestra app tiene una barra de navegacion en la parte superior donde se encuentran las siguientes opciones:
+Al iniciar nuestra aplicacion mostrara por defecto la siguiente pantalla tiene una barra de navegacion en la parte superior donde se encuentran las siguientes opciones:
 
 - System Monitor
 - History Ram & Cpu
@@ -111,10 +120,101 @@ En esta opcion podremos visualizar
 - Gráfica en Tiempo Real del porcentaje de utilización del CPU
 
 
+![pagina Principal](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/proyecto1/Proyectos/Proyecto1/assets/pagina%20principal.png)
+
+
 #### History Ram & Cpu
 
 en base a los datos que se obtienen a lo largo del tiempo tanto de nuestro modulo ram y nuestro modulo cpu, en esta opcion tiene la caracteristica de visualizar como se comportan esos datos a lo largo del tiempo tanto de RAM como de CPU.
 
 Ademas podemos ver la opcion de poder actualizar las graficas manualmente mediante el boton de actualizar que se muestra en la pagina.
+
+
+
+![Historial](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/proyecto1/Proyectos/Proyecto1/assets/Historial.png)
+
+
+#### Tree Process
+
+en esta pagina se mostra el arbol de procesos que es administrado por el modulo_cpu que se cargo anteriormente, estos procesos se podran visualizar al momento de seleccionar el SelectBox
+
+
+![TreeProcess](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/proyecto1/Proyectos/Proyecto1/assets/Historial.png)
+
+
+ademas tiene la capacidad que cuando este es seleccionado, y al presionar el boton de View que se encuentra en la parte izquierda del Select box, mostrara de manera grafica como se compone desde la raiz hasta sus hijos (si es que los tuviera)
+
+cada nodo mostrara el nombre del proceso y su PID correspondiente:
+
+* caso en el que el proceso no tiene hijos
+
+![TreeProcess](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/proyecto1/Proyectos/Proyecto1/assets/tree%20process2.png)
+
+* caso en el que el padre tiene varios hijos:
+
+![TreeProcess2](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/proyecto1/Proyectos/Proyecto1/assets/tree%20process3.png)
+
+***NOTA: para poder visualizar diferentes arboles de procesos es recomendado utilizar el boton de limpiar que se encuentra en la parte derecha de color amarillo para generar un nuevo arbol***
+
+
+#### State Managment
+
+En esta pagina se podra  simular los estados de los procesos a través de botones, a manera de interaccion podra visualizar de manera grafica como es que se va comportando el estado de los procesos, las opciones se detallan a continuacion:
+
+**Botones:**
+
+
+-  New: Este botón creará un nuevo proceso, debe de retornar el PID de dicho proceso y
+generará los siguientes estados: New, Ready y Running.
+- Kill: Debe de Terminar el Proceso definitivamente. Estado Terminated.
+- Stop: este botón debe de cambiar el estado de Running a Ready.
+- Resumen: Este botón debe de cambiar el estado de Ready a Running.
+
+![StateManagment](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/proyecto1/Proyectos/Proyecto1/assets/stateManagment.png)
+
+
+
+##### Opcion New & estados
+
+Al ser seleccionado un boton como se indico anteriormente se mostrara de manera grafica la generacion de los estados, cabe decir que cada estado tendra un colo diferente para indicar cual es el estado actual y ademas se mostrara en pantalla en la parte superior izquierda el estado actual de manera textual.
+
+para la opcion de new el color representante sera `verde`
+
+
+-  New: El proceso se está creando
+- Running: Se están ejecutando instrucciones.
+- Waiting: El proceso está esperando que ocurra algún evento.
+
+![StateManagment2](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/proyecto1/Proyectos/Proyecto1/assets/state%20Managment2.png)
+
+
+##### Opcion Stop & estados
+
+al seleccionar stop el proceso pasara a un estado de Ready
+
+- Ready: El proceso está esperando ser asignado a un procesador.
+
+el color que identifica este estado es el color `amarillo`
+
+##### Opcion Resume & estados
+
+Al seleccionar Resume el proceso pasara a un estado de Running
+
+para la opcion de new el color representante sera `verde`
+
+
+##### Opcion Kill & estados
+al seleccionar la opcion Kill el proceso pasa a al estado Terminated.
+
+* Terminated: El proceso ha finalizado su ejecución.
+
+
+para la opcion de new el color representante sera `rojo`
+
+
+![StateManagment4](https://github.com/Alex4191-usac/SO1_1S2024_201602880/blob/proyecto1/Proyectos/Proyecto1/assets/state%20Managment4.png)
+
+
+
 
 
