@@ -1,3 +1,4 @@
+/*
 import React, { useState, useEffect, useRef } from 'react';
 import "chart.js/auto"
 import { Doughnut } from 'react-chartjs-2';
@@ -35,7 +36,7 @@ const App = () => {
     return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
   }*/
   
-  
+  /*
   // Function to fetch and update chart data
   const updateChartData = async () => {
     try {
@@ -148,3 +149,99 @@ const App = () => {
 
 export default App;
 
+*/
+import {useEffect, useState} from 'react';
+import { CircularProgressbar } from 'react-circular-progressbar';
+
+const App = () => {
+  const [getRamInfo, setRamInfo] = useState(null)
+  const [getCpuInfo, setCpuInfo] = useState(null)
+
+  
+  const updateChartData = async () => {
+    try {
+      console.log("Fetching data from server")
+      const response = await fetch('/insertRam')
+      const data = await response.json()
+      setRamInfo(data.message)
+    } catch (error) {
+        console.log(error)
+        console.log("Error: " + " Please check the server is running or not."  )
+    }
+  };
+
+
+  const updateChartDataCPU = async () => {
+    try {
+      console.log("Fetching data from server")
+      const response = await fetch('/insertCpu')
+      const data = await response.json()
+      setCpuInfo(data.message)
+    } catch (error) {
+        console.log(error)
+        console.log("Error: " + " Please check the server is running or not."  )
+    }
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      updateChartData();
+      updateChartDataCPU();
+    }, 500)
+    return () => clearInterval(interval)
+  }, []);
+
+
+  return (
+
+    <section className=' pt-12 pl-10 '>
+      <h1 className='text-4xl  text-slate-700 font-bold mb-5'>System Monitor</h1>
+      <div className='flex '>
+        <div className="w-1/2 border border-b-gray-600 shadow-xl rounded-xl  ">
+          <h1 className='text-2xl text-center font-bold mb-5 pt-5'>RAM Monitor</h1>
+          <div className=' flex items-center justify-center mt-4 mb-10 h-60 '>
+            {getRamInfo ? (
+                <div className=' h-60 w-60'>
+                <CircularProgressbar 
+                  value={getRamInfo.porcentaje} 
+                  text={`${getRamInfo.porcentaje}%`}
+                />
+              </div>
+            ): (
+              <div className=' h-60 w-60'>
+                  <CircularProgressbar 
+                  value={0} 
+                  text={`0%`}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="w-1/2 border border-b-gray-600 shadow-xl rounded-xl  ">
+          <h1 className='text-2xl text-center font-bold mb-5 pt-5'>CPU Monitor</h1>
+            <div className=' flex items-center justify-center mt-4 mb-10 h-60 '>
+             {getCpuInfo ? (
+                <div className=' h-60 w-60'>
+                    <CircularProgressbar 
+                    value={getCpuInfo.cpu_porcentaje} 
+                    text={`${getCpuInfo.cpu_porcentaje}%`}
+                  />
+                </div>
+             ): (
+              <div className=' h-60 w-60'>
+                  <CircularProgressbar 
+                  value={0} 
+                  text={`0%`}
+                />
+              </div>
+             
+             )}
+             </div>
+        </div>
+      </div>
+    </section>
+
+  )
+};
+
+export default App;
