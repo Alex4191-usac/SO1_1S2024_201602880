@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option go_package = "./;confproto";
+
+package confproto;
+
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloResponse) {}
+}
+
+message HelloRequest {
+  string name = 1;
+  string album = 2;
+  string year = 3;
+  string rank = 4;
+}
+
+message HelloResponse {
+  string message = 1;
+}
+
