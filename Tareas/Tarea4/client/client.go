@@ -36,7 +36,6 @@ func insertMessage(c *fiber.Ctx) error {
 
 	go sendRequest(msg)
 	return nil
-
 }
 
 func sendRequest(msg Message) {

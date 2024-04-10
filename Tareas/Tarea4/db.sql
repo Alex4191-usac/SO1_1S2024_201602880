@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `tarea4`.`music_liderboard`(
     `name` VARCHAR(150) NOT NULL,
     `album` VARCHAR(100) NOT NULL,
     `year` VARCHAR(100) NOT NULL,
-    `rank` VARCHAR(50) NOT NULL,
+    `ranking` VARCHAR(50) NOT NULL,
     PRIMARY KEY(`id`)
 
 )

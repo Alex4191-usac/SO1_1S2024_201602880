@@ -12,69 +12,58 @@ import (
 	"google.golang.org/grpc"
 )
 
+// Database configuration
+
+const (
+	DBUser     = "root"
+	DBPassword = "strong_password"
+	DBName     = "tarea4"
+	DBHost     = "localhost"
+	DBPort     = "3307"
+)
+
 type server struct {
 	pb.UnimplementedGreeterServer
-}
-
-type Message struct {
-	Name  string
-	Album string
-	Year  string
-	Rank  string
-}
-
-type DBconnection struct {
 	db *sql.DB
 }
 
-func (dbc *DBconnection) Connect(user, password, host, port, database string) error {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, database)
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
-		return err
-	}
-
-	if err := db.Ping(); err != nil {
-		return err
-	}
-
-	dbc.db = db
-	fmt.Println("Connected to the database")
-	return nil
-}
-
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloResponse, error) {
-	data := Message{
-		Name:  in.Name,
-		Album: in.Album,
-		Year:  in.Year,
-		Rank:  in.Rank,
+	// Store the message in the database
+	_, err := s.db.Exec("INSERT INTO music_liderboard (name, album, year, ranking) VALUES (?, ?, ?, ?)",
+		in.Name, in.Album, in.Year, in.Rank)
+	if err != nil {
+		return nil, err
 	}
-	fmt.Println(data)
-	return &pb.HelloResponse{Message: "Hello I received the data of " + data.Name}, nil
+
+	return &pb.HelloResponse{Message: "Hello I received the data of " + in.Name}, nil
 }
 
 func main() {
-	lis, err := net.Listen("tcp", ":3001")
+	// Connect to MySQL database
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DBUser, DBPassword, DBHost, DBPort, DBName))
 	if err != nil {
-		fmt.Println("Failed to listen:", err)
+		fmt.Printf("Failed to connect to database: %v\n", err)
 		return
 	}
+	defer db.Close()
 
+	// Create a listener on TCP port 3001
+	lis, err := net.Listen("tcp", ":3001")
+	if err != nil {
+		fmt.Printf("Failed to listen: %v\n", err)
+		return
+	}
+	fmt.Println("Server listening on port 3001")
+
+	// Create a gRPC server instance
 	s := grpc.NewServer()
-	pb.RegisterGreeterServer(s, &server{})
-	fmt.Println("Server listening")
 
-	dbc := DBconnection{}
-	err_db := dbc.Connect("root", "strong_password", "localhost", "3307", "tarea4")
-	if err_db != nil {
-		fmt.Println("Failed to connect to the database:", err_db)
-	}
+	// Register the service implementation with the server
+	pb.RegisterGreeterServer(s, &server{db: db})
 
-	defer dbc.db.Close()
-
+	// Start the server
 	if err := s.Serve(lis); err != nil {
-		fmt.Println("Failed to serve:", err)
+		fmt.Printf("Failed to serve: %v\n", err)
+		return
 	}
-
 }
