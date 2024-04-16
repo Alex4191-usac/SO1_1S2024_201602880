@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option go_package = "./;confproto";
+
+package confproto;
+
+
+message Vote {
+    string name = 1;
+    string album = 2;
+    string year = 3;
+    string rank = 4;
+}
+
+service VoteService {
+    rpc TakeVote (Vote) returns (VoteResponse) {} 
+}
+
+message VoteResponse {
+    string message = 1;
+}
