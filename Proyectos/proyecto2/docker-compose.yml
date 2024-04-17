@@ -1,0 +1,23 @@
+services:
+  grpc_server:
+    build:
+      context: ./grcp/server
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - "3001:3001"
+    networks:
+      - grpc_network
+
+  grpc_client:
+    build:
+      context: ./grcp/client
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - "3000:3000"
+    networks:
+      - grpc_network
+
+networks:
+  grpc_network:

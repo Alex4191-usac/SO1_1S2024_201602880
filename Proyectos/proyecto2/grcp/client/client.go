@@ -45,7 +45,7 @@ func prepareVote(c *fiber.Ctx) error {
 
 func sendVote(voteData VoteData) {
 	conn, err := grpc.Dial(
-		"localhost:50051",
+		"grpc_server:3001",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithBlock())
 
@@ -81,7 +81,7 @@ func main() {
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
-		AllowMethods: "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
+		AllowMethods: "*",
 	}))
 
 	app.Get("/", func(c *fiber.Ctx) error {

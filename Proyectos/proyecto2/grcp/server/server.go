@@ -43,7 +43,7 @@ func (s *serverImp) TakeVote(ctx context.Context, in *pb.Vote) (*pb.VoteResponse
 func main() {
 	fmt.Println("Server Implementation")
 
-	lis, err := net.Listen("tcp", ":50051")
+	lis, err := net.Listen("tcp", ":3001")
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
