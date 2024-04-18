@@ -45,7 +45,8 @@ func prepareVote(c *fiber.Ctx) error {
 
 func sendVote(voteData VoteData) {
 	conn, err := grpc.Dial(
-		"grpc_server:3001",
+		//"grpc_server:3001",
+		"localhost:3001",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithBlock())
 
