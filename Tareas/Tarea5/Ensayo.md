@@ -18,9 +18,9 @@ incluyendo el actual mercado laboral tiene abierta sus puertas a requerimientos 
 la implementacion de estas tecnologias ya que Kubernetes y Kafka pueden colaborar de manera sinérgica para construir arquitecturas modernas y escalables.
 
 ### Anexos
-![Foto Conferencia Inicio](conferencia sopes inicio init.png)
+![Foto Conferencia Inicio](<conferencia sopes inicio init.png>)
 *Figura 1. Foto Inicio de Conferencia*
 
 
-![Foto Conferencia Final](conf init.png)
+![Foto Conferencia Final](<conf init.png>)
 *Figura 2. Foto Final de Conferencia*
