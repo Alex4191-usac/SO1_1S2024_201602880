@@ -29,11 +29,10 @@ metadata:
   name: grpcservice
   namespace: so1p2
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: grpcdeployment
   ports:
   - protocol: TCP
-    port: 3200
+    port: 3000
     targetPort: 3000
-    nodePort: 30008

@@ -4,3 +4,6 @@ venv/
 # Ignore any compiled Python files
 *.pyc
 __pycache__/
+
+
+/kafka
