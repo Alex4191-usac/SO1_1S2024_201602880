@@ -8,6 +8,7 @@ import (
 
 	pb "grcp_server/proto"
 
+	"github.com/segmentio/kafka-go"
 	"google.golang.org/grpc"
 )
 
@@ -20,6 +21,31 @@ type VoteData struct {
 	album string
 	year  string
 	rank  string
+}
+
+func kafkaVote(vote VoteData) {
+	writer := &kafka.Writer{
+		Addr:         kafka.TCP("my-cluster-kafka-bootstrap:9092"),
+		Topic:        "my-topic",
+		Balancer:     &kafka.LeastBytes{},
+		RequiredAcks: kafka.RequireAll,
+	}
+
+	defer writer.Close()
+
+	//Print the vote data
+	message := fmt.Sprintf("KafkaName: %s\nAlbum: %s\nYear: %s\nRank: %s\n", vote.name, vote.album, vote.year, vote.rank)
+
+	// Write the vote data to the kafka topic
+	msg := kafka.Message{
+		Key:   []byte(vote.name),
+		Value: []byte(message),
+	}
+
+	if err := writer.WriteMessages(context.Background(), msg); err != nil {
+		log.Fatal("Failed to write messages:", err)
+	}
+	fmt.Println("Vote has been sent to Kafka")
 }
 
 func (s *serverImp) TakeVote(ctx context.Context, in *pb.Vote) (*pb.VoteResponse, error) {
@@ -36,6 +62,8 @@ func (s *serverImp) TakeVote(ctx context.Context, in *pb.Vote) (*pb.VoteResponse
 	// Print the vote data
 	fmt.Printf("Name: %s\nAlbum: %s\nYear: %s\nRank: %s\n", voteData.name, voteData.album, voteData.year, voteData.rank)
 
+	// Send the vote data to Kafka
+	kafkaVote(voteData)
 	// Return the response
 	return &pb.VoteResponse{Message: "Vote has been received"}, nil
 }

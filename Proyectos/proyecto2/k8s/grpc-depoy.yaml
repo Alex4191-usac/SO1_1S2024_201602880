@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: grpc-server
-        image: alex4191/proyecto2-grpc_server:v1.0
+        image: alex4191/proyecto2-grpc_server:v2.0
         ports:
         - containerPort: 3001
       - name: grpc-client

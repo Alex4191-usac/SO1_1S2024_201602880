@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consumer
+  namespace: so1p2
+spec:
+  selector:
+    matchLabels:
+      app: consumer
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: consumer
+    spec:
+      containers:
+      - name: consumer
+        image: alex4191/proyecto2-consumer:v1.0
+        ports:
+        - containerPort: 3000
