@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-mongodb
+  namespace: so1p2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: alex4191/my-mongo-image:v1.1
+        ports:
+        - containerPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-mongodb
+  namespace: so1p2
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 27017
+    targetPort: 27017
+  selector:
+    app: mongodb

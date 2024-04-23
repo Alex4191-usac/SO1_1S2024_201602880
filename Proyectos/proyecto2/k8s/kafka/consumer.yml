@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: consumer
-        image: alex4191/proyecto2-consumer:v1.0
+        image: alex4191/proyecto2-consumer:v1.3
         ports:
         - containerPort: 3000
