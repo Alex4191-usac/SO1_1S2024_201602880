@@ -34,7 +34,7 @@ func kafkaVote(vote VoteData) {
 	defer writer.Close()
 
 	//Print the vote data
-	message := fmt.Sprintf("KafkaName: %s\nAlbum: %s\nYear: %s\nRank: %s\n", vote.name, vote.album, vote.year, vote.rank)
+	message := fmt.Sprintf("Name: %s\nAlbum: %s\nYear: %s\nRank: %s\n", vote.name, vote.album, vote.year, vote.rank)
 
 	// Write the vote data to the kafka topic
 	msg := kafka.Message{

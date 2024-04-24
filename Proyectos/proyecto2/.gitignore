@@ -7,3 +7,5 @@ __pycache__/
 
 
 /kafka
+cloudRun/api/node_modules
+cloudRun/client/web/node_modules
