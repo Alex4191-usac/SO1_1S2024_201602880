@@ -3,14 +3,17 @@ package main
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/segmentio/kafka-go"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var mongoClient *mongo.Client
+var redisClient *redis.Client
 
 func main() {
 
@@ -27,6 +30,7 @@ func main() {
 	ctx := context.Background()
 	fmt.Println("Starting Kafka consumer")
 
+	redisClient = initRedis()
 	mongoClient = initMongoClient()
 
 	var wg sync.WaitGroup
@@ -43,32 +47,51 @@ func main() {
 
 		go func(msg kafka.Message) {
 			defer wg.Done()
-			if err := saveToMongo(msg); err != nil {
-				fmt.Println("Error saving to MongoDB: ", err)
+			if err := saveToRedis(msg); err != nil {
+				fmt.Println("Error saving to Redis: ", err)
 			}
 		}(msg)
 
 		go func(msg kafka.Message) {
 			defer wg.Done()
-			saveToRedis(msg)
+			if err := saveToMongo(msg); err != nil {
+				fmt.Println("Error saving to MongoDB: ", err)
+			}
 		}(msg)
 
 	}
 
 }
 
+func initRedis() *redis.Client {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "10.55.181.61:6379", //34.28.23.59
+		Password: "admin",
+		DB:       0,
+	})
+
+	_, err := client.Ping(context.Background()).Result()
+	if err != nil {
+		fmt.Println("Error connecting to Redis:", err)
+	}
+
+	fmt.Println("Connected to Redis")
+	return client
+}
+
 func initMongoClient() *mongo.Client {
-	clientOptions := options.Client().ApplyURI("mongodb://35.202.31.252:27017")
+	clientOptions := options.Client().ApplyURI("mongodb://10.55.185.189:27017") //34.28.96.178
 	client, err := mongo.Connect(context.Background(), clientOptions)
 	if err != nil {
 		fmt.Println("Error connecting to MongoDB:", err)
 	}
+	fmt.Println("Connected to Mongo")
 	return client
 }
 
 func saveToMongo(msg kafka.Message) error {
-	fmt.Println("Saving to Mongo: ")
-	collection := mongoClient.Database("sopes1p2").Collection("votossopes")
+	fmt.Println("PROCESS TO SAVE to Mongo: ")
+	collection := mongoClient.Database("sopes1p2").Collection("votos")
 
 	doc := map[string]interface{}{
 		"message": string(msg.Value),
@@ -84,6 +107,30 @@ func saveToMongo(msg kafka.Message) error {
 
 }
 
-func saveToRedis(msg kafka.Message) {
-	fmt.Println("Saving to Redis:  ", string(msg.Value))
+func saveToRedis(msg kafka.Message) error {
+	fmt.Println("PROCESS TO SAVE to REDIS: ")
+
+	//split message by /n
+	splitted := strings.Split(string(msg.Value), "\n")
+	fmt.Println("SPLITEO: ")
+	name := strings.TrimPrefix(splitted[0], "Name: ")
+	album := strings.TrimPrefix(splitted[1], "Album: ")
+	year := strings.TrimPrefix(splitted[2], "Year: ")
+	rank := strings.TrimPrefix(splitted[3], "Rank: ")
+
+	fmt.Printf("Valores extraídos: name='%s', album='%s', year='%s', rank='%s'\n", name, album, year, rank)
+
+	key := fmt.Sprintf("%s_%s_%s_rank_%s", name, album, year, rank)
+
+	fmt.Printf("Key Generated for reddis: %s\n", key)
+
+	_, err := redisClient.Incr(context.Background(), key).Result()
+	if err != nil {
+		return fmt.Errorf("error increment the counter on Redis: %w", err)
+	}
+
+	fmt.Printf("Saved to Redis %s/n", key)
+
+	return nil
+
 }
