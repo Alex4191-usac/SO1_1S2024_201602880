@@ -9,6 +9,13 @@ para enviar datos a una base de datos en Redis; estos datos se verán en dashboa
 También se tiene una base de datos de Mongodb para guardar los logs, los cuales serán
 consultados por medio de una aplicación web
 
+#### Objetivos
+* Implementar un sistema distribuido con microservicios en kubernetes.
+* Utilizar un Generador de Trafico para la simulacion de carga de datos.
+* Encolar distintos servicios con sistemas de mensajerías utilizando kafka.
+* Utilizar Grafana como interfaz gráfica de dashboards.
+* diferenciar y ver en practica los diferentes metodos y techonologias para transportar data con rust y go
+
 #### Servicios y Stack utilizados
 
 * Google Kubernetes Engine
@@ -145,7 +152,12 @@ kubectl apply -f consumer.yml
 kubectl apply -f hpa-consumer.yaml
 ```
 
-7. levantar ingress
+7. levantar grafana
+```bash
+kubectl apply -f grafana.yaml
+```
+
+8. levantar ingress
 
 ```bash
 kubectl apply -f ingress.yaml
@@ -209,7 +221,7 @@ en este caso por el archivo trafic muestra el comportamiento de las votaciones d
 
 por otro lado tambien podemos visualizar los logs de nuestra base de datos mongo por medio del servicio CLOUD RUN
 al ingresar en la siguiente url podremos ver los ultimos datos ingresados en nuestra bd
-![mongoClient](assets/image.png)
+![mongoClient](assets/image3.png)
 
 
 #### Anexos
@@ -231,6 +243,35 @@ es un servicio administrado de Kubernetes ofrecido por Google Cloud Platform. pe
 *Grafana:* es una plataforma de código abierto utilizada para la visualización y análisis de datos.  Funciona como un centro de control para que pueda ver sus datos de diversas fuentes en un solo lugar, comprenderlos mejor y tomar decisiones informadas.
 
 *Locust:* es una herramienta de código abierto utilizada para realizar pruebas de carga y rendimiento de aplicaciones web. Se enfoca en simular escenarios de usuarios concurrentes altos, lo que permite identificar cuellos de botella y medir la escalabilidad de una aplicación bajo presión
+
+
+
+
+##### Preguntas a resolver
+¿En qué casos utilizarías grpc y en qué casos utilizarías wasm?
+
+gRPC y WebAssembly (WASM) son dos tecnologías que se han vuelto cada vez más populares en los últimos años. Ambas ofrecen ventajas significativas para el desarrollo de aplicaciones web y móviles, pero también tienen sus propias limitaciones.
+
+*gRPC (Remote Procedure Call)* es un marco de trabajo de código abierto para la comunicación entre servicios. Se basa en HTTP/2 y utiliza un protocolo binario eficiente para la serialización de datos. gRPC es ideal para aplicaciones que requieren un alto rendimiento y una baja latencia, como servicios de streaming o juegos en línea.
+
+*WebAssembly* es una tecnología que permite ejecutar código compilado en navegadores web. Esto significa que se pueden escribir aplicaciones web en lenguajes de programación como C++ o Rust, que tradicionalmente no se han podido utilizar en la web. WASM es ideal para aplicaciones que requieren un alto rendimiento y un acceso directo al hardware, como aplicaciones de gráficos 3D o juegos de alto rendimiento
+
+* Cuándo usar gRPC:
+
+    Servicios de streaming: Baja latencia y alto rendimiento.
+    Juegos en línea: Experiencia fluida y receptiva.
+    Aplicaciones de misión crítica: Confiabilidad y seguridad.
+
+* Cuándo usar WASM:
+
+    Aplicaciones de gráficos 3D: Acceso directo al hardware.
+    Juegos de alto rendimiento: Experiencia fluida y receptiva.
+    Aplicaciones con acceso al hardware: Realidad aumentada/virtual.
+
+* "la herramienta adecuada":
+
+    Alto rendimiento y baja latencia: gRPC.
+    Acceso al hardware o ejecución en navegador: WASM.
 
 
 

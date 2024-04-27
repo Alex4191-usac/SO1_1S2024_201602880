@@ -29,11 +29,13 @@
     methods: {
       async fetchData() {
         try {
-            const response = await axios.get(`https://api-cl7ewgkprq-uc.a.run.app/api/votes/tail`);
-            //clear current data
-            this.items = [];
-            //add new data
-            this.items = response.data;
+            const response = await axios.get(`https://api-cl7ewgkprq-uc.a.run.app/api/votes`);
+            //save into temp array
+            const temp = response.data;
+            //get the last 20 items
+            const lastItems = temp.slice(-20);
+            //save the 20 items to the items array
+            this.items = lastItems;
         } catch (error) {
           console.error('Error fetching data:', error);
         }
