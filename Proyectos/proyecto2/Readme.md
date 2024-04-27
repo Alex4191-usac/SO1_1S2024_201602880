@@ -22,6 +22,48 @@ consultados por medio de una aplicación web
 * Grafana
 * Locust 
 
+#### Descripcion 
+para la simulacion de votos se utilizara Locust, este generador se ejecutara de manera local y utilizara un archivo.json que contendra cada uno de los votos.
+
+la estructura de este archivo es la siguiente
+
+```json
+    {
+        "name": "Walter M",
+        "album": "Ursurpando",
+        "year": "2020",
+        "rank": "1st"
+    }
+
+```
+donde el nombre refleja el artista, el album su disco, el periodo presente de la entrega discografica y la posicion popular del disco.
+
+los datos se dirigiran a un clúster de kubernetes en la plataforma de Google Cloud (GKE), dentro de la arquitectura el flujo de datos sera controlado por kafka, por lo cual los datos se manejaran por medio de productores y consumidores y de los consumidores hacia nuestro portal de Grafana y nuestro Cliente en Cloud Run
+
+por parte de los Productores, enviaran la informacion a una cola de Kafka, en los cuales estan
+
+Productor *gRPC:
+dentro de ella se encuentra la conexion cliente -servidor para el manejo de protobuf de los datos, estos estan programados en lenguaje GO
+
+- cliente: maneja la peticion y levanta la url utilizando Gofiber
+- server: procesa la informacion y la manda a kafka
+
+ambos servicios se encuentran en un mismo pod, lo cual generaliza el producer grpc
+
+
+Consumidor:
+se tiene un daemon consumidor escrito en Golang que esta deployado en un pod de 2 replicas con un autoscaling de hasta 5, la cual aloja la data en dos bases de datos las cuales son Mongo y Redis.
+
+Clientes:
+
+para cada una de las bases de Datos pueden ser consultadas por medio de un Cliente alojado en Cloud Run y por medio de un Dashboard de Grafana.
+
+para el Cliente de Cloud Run, se construyo una api en Node y una webapp con Vue JS; la cual se pueden observar los registros de
+los logs de MongoDB. la webapp esta desplegada en el puerto 80 utilizando proxies y puede consultar los ultimos 20 logs de la base de datos.
+
+por su parte Grafana, podra accederse a su respectivo ip y visualizar los datos representados por graficas de las votaciones que representan en los datos almecenados en la base de datos Redis.
+
+
 #### Instalacion
 
 ##### Locust
@@ -157,6 +199,17 @@ e ingresamos la url al navegador:
 
 
 dentro del portal de locust ingresamos el host a la cual queremos dirigir el trafico de datos, la url a utilizar se muestra en la imagen anterior
+
+
+al realizarse la insercion podemos ver en nuestro dashboard de grafana el comportamiento de los datos de manera grafica
+![grafana](assets/image2.png)
+
+
+en este caso por el archivo trafic muestra el comportamiento de las votaciones de dos periodos distintos 2020 y 2021
+
+por otro lado tambien podemos visualizar los logs de nuestra base de datos mongo por medio del servicio CLOUD RUN
+al ingresar en la siguiente url podremos ver los ultimos datos ingresados en nuestra bd
+![mongoClient](assets/image.png)
 
 
 #### Anexos

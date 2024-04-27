@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: redis
-          image: alex4191/my-redis-image:v1.0
+          image: alex4191/my-redis-image:v1.1
           ports:
             - containerPort: 6379  
           resources:

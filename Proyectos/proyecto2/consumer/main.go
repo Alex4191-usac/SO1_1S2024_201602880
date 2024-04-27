@@ -65,7 +65,7 @@ func main() {
 
 func initRedis() *redis.Client {
 	client := redis.NewClient(&redis.Options{
-		Addr:     "10.55.181.61:6379", //34.28.23.59
+		Addr:     "10.55.186.172:6379", //34.27.178.49
 		Password: "admin",
 		DB:       0,
 	})
@@ -120,7 +120,7 @@ func saveToRedis(msg kafka.Message) error {
 
 	fmt.Printf("Valores extraídos: name='%s', album='%s', year='%s', rank='%s'\n", name, album, year, rank)
 
-	key := fmt.Sprintf("%s_%s_%s_rank_%s", name, album, year, rank)
+	key := fmt.Sprintf("%s_%s_%s_%s", name, album, year, rank)
 
 	fmt.Printf("Key Generated for reddis: %s\n", key)
 
